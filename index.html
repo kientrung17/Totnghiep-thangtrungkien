@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thiệp Mời Lễ Tốt Nghiệp</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@300;400;700&family=Dancing+Script:wght@700&display=swap');
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: radial-gradient(circle at center, #0a0a23 0%, #000033 70%);
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .great-vibes {
+      font-family: 'Great Vibes', cursive;
+    }
+    .dancing-script {
+      font-family: 'Dancing Script', cursive;
+    }
+    .star {
+      position: absolute;
+      background: radial-gradient(circle, #ffffff, #ffffff00 70%);
+      border-radius: 50%;
+      animation: twinkle var(--duration) infinite;
+      pointer-events: none;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+    .meteor {
+      position: absolute;
+      width: 3px;
+      height: 30px;
+      background: linear-gradient(to bottom, #ffffff, #ffffff00);
+      animation: meteorFall var(--duration) linear infinite;
+      pointer-events: none;
+    }
+    @keyframes meteorFall {
+      0% { transform: translate(0, 0) rotate(45deg); opacity: 1; }
+      100% { transform: translate(400px, 400px) rotate(45deg); opacity: 0; }
+    }
+    .particle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: radial-gradient(circle, #ff69b4, transparent 70%);
+      border-radius: 50%;
+      animation: float 8s infinite;
+      pointer-events: none;
+    }
+    @keyframes float {
+      0% { transform: translate(0, 0); opacity: 1; }
+      50% { transform: translate(50px, -50px); opacity: 0.5; }
+      100% { transform: translate(0, 0); opacity: 1; }
+    }
+    .glow-pulse {
+      position: relative;
+      box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.5);
+      animation: glow 3s infinite;
+    }
+    @keyframes glow {
+      0% { box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.5); }
+      50% { box-shadow: 0 0 40px 10px rgba(255, 255, 255, 0.7); }
+      100% { box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.5); }
+    }
+    .card-breath {
+      animation: breathe 3s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+    .confirmation-message {
+      animation: popIn 0.5s ease-out;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .firework-rocket {
+      position: fixed;
+      bottom: 0;
+      width: 10px;
+      height: 30px;
+      background: #ffd700;
+      border-radius: 5px;
+      animation: launch 1s ease-out forwards;
+    }
+    @keyframes launch {
+      0% { bottom: 0; opacity: 1; }
+      80% { bottom: 60%; opacity: 1; }
+      100% { bottom: 60%; opacity: 0; }
+    }
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-5px, 0); }
+      50% { transform: translate(5px, 0); }
+      75% { transform: translate(-5px, 0); }
+      100% { transform: translate(0, 0); }
+    }
+    .decline-button {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    function Stars() {
+      const stars = Array.from({ length: 200 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        size: Math.random() * 3 + 1,
+        duration: Math.random() * 2 + 2,
+      }));
+
+      return (
+        <div>
+          {stars.map(star => (
+            <div
+              key={star.id}
+              className="star"
+              style={{
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                '--duration': `${star.duration}s`,
+              }}
+            ></div>
+          ))}
+        </div>
+      );
+    }
+
+    function Meteors() {
+      const meteors = Array.from({ length: 10 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        top: Math.random() * 50 - 50,
+        delay: Math.random() * 5,
+        duration: Math.random() * 3 + 3,
+      }));
+
+      return (
+        <div>
+          {meteors.map(meteor => (
+            <div
+              key={meteor.id}
+              className="meteor"
+              style={{
+                left: `${meteor.left}%`,
+                top: `${meteor.top}%`,
+                animationDelay: `${meteor.delay}s`,
+                '--duration': `${meteor.duration}s`,
+              }}
+            ></div>
+          ))}
+        </div>
+      );
+    }
+
+    function Particles() {
+      const particles = Array.from({ length: 20 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        delay: Math.random() * 4,
+      }));
+
+      return (
+        <div>
+          {particles.map(particle => (
+            <div
+              key={particle.id}
+              className="particle"
+              style={{
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                animationDelay: `${particle.delay}s`,
+              }}
+            ></div>
+          ))}
+        </div>
+      );
+    }
+
+    function InvitationCard() {
+      const [message, setMessage] = React.useState(null);
+      const [isShaking, setIsShaking] = React.useState(false);
+      const [rockets, setRockets] = React.useState([]);
+      const [declinePos, setDeclinePos] = React.useState({ x: 0, y: 0 });
+      const declineButtonRef = React.useRef(null);
+      const mousePosRef = React.useRef({ x: 0, y: 0 });
+      const isMovingRef = React.useRef(false);
+
+      const triggerFireworkExplosion = () => {
+        setTimeout(() => {
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            angle: 45,
+            startVelocity: 40,
+            origin: { x: 0.1, y: 0.4 },
+            colors: ['#ffd700', '#ffff99'],
+            shapes: ['circle'],
+            gravity: 0.5,
+            scalar: 2,
+            spin: true,
+            zIndex: 1000,
+          });
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            angle: 135,
+            startVelocity: 40,
+            origin: { x: 0.9, y: 0.4 },
+            colors: ['#ffd700', '#ffff99'],
+            shapes: ['circle'],
+            gravity: 0.5,
+            scalar: 2,
+            spin: true,
+            zIndex: 1000,
+          });
+        }, 0);
+
+        setTimeout(() => {
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            angle: 45,
+            startVelocity: 50,
+            origin: { x: 0.1, y: 0.4 },
+            colors: ['#ff0000', '#ff4040'],
+            shapes: ['circle'],
+            gravity: 0.4,
+            scalar: 1.5,
+            spin: true,
+            zIndex: 1000,
+          });
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            angle: 135,
+            startVelocity: 50,
+            origin: { x: 0.9, y: 0.4 },
+            colors: ['#ff0000', '#ff4040'],
+            shapes: ['circle'],
+            gravity: 0.4,
+            scalar: 1.5,
+            spin: true,
+            zIndex: 1000,
+          });
+        }, 500);
+
+        setTimeout(() => {
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            angle: 45,
+            startVelocity: 60,
+            origin: { x: 0.1, y: 0.4 },
+            colors: ['#00b7eb', '#800080', '#00ffff'],
+            shapes: ['circle'],
+            gravity: 0.3,
+            scalar: 1.8,
+            spin: true,
+            zIndex: 1000,
+          });
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            angle: 135,
+            startVelocity: 60,
+            origin: { x: 0.9, y: 0.4 },
+            colors: ['#00b7eb', '#800080', '#00ffff'],
+            shapes: ['circle'],
+            gravity: 0.3,
+            scalar: 1.8,
+            spin: true,
+            zIndex: 1000,
+          });
+        }, 1000);
+      };
+
+      const triggerSlime = () => {
+        const duration = 2000;
+        const animationEnd = Date.now() + duration;
+        const defaults = {
+          startVelocity: 20,
+          spread: 180,
+          ticks: 100,
+          zIndex: 0,
+          particleCount: 100,
+          gravity: 1.5,
+        };
+
+        function randomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(() => {
+          const timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          confetti({
+            ...defaults,
+            origin: { x: randomInRange(0.3, 0.7), y: 0.8 },
+            colors: ['#ffffff', '#f0f0f0', '#e0e0e0'],
+            shapes: ['circle'],
+          });
+        }, 300);
+      };
+
+      const handleRSVP = () => {
+        setMessage({
+          type: 'confirm',
+          text: 'Cảm ơn bạn đã xác nhận!',
+          subtext: 'Hẹn gặp bạn tại buổi lễ!',
+          special: 'Chỉ cần bạn có mặt, thắng thua không quan trọng',
+        });
+        setIsShaking(true);
+
+        const newRockets = [
+          { id: 1, left: '10%', delay: 0 },
+          { id: 2, left: '90%', delay: 0 },
+          { id: 3, left: '10%', delay: 200 },
+          { id: 4, left: '90%', delay: 200 },
+        ];
+
+        setRockets(newRockets);
+
+        newRockets.forEach(rocket => {
+          setTimeout(() => {
+            triggerFireworkExplosion();
+          }, 1000 + rocket.delay);
+        });
+
+        setTimeout(() => setIsShaking(false), 500);
+        setTimeout(() => setRockets([]), 2000);
+        setTimeout(() => setMessage(null), 4000);
+      };
+
+      const handleDecline = () => {
+        setMessage({
+          type: 'decline',
+          text: 'Vui lòng xác nhận tham dự!',
+          subtext: 'Hãy nhấn nút "Xác nhận Tham Dự" để tham gia buổi lễ.',
+        });
+        triggerSlime();
+        setTimeout(() => setMessage(null), 4000);
+      };
+
+      const updateDeclineButtonPosition = () => {
+        if (!declineButtonRef.current || !isMovingRef.current) return;
+
+        const button = declineButtonRef.current;
+        const card = button.closest('.card-breath');
+        const cardRect = card.getBoundingClientRect();
+        const rect = button.getBoundingClientRect();
+        const buttonCenterX = rect.left + rect.width / 2;
+        const buttonCenterY = rect.top + rect.height / 2;
+        const mouseX = mousePosRef.current.x;
+        const mouseY = mousePosRef.current.y;
+
+        const distance = Math.sqrt(
+          Math.pow(mouseX - buttonCenterX, 2) + Math.pow(mouseY - buttonCenterY, 2)
+        );
+
+        if (distance < 200) {
+          const maxMoveX = 300;
+          const maxMoveY = 200;
+          const newX = (Math.random() - 0.5) * maxMoveX;
+          const newY = (Math.random() - 0.5) * maxMoveY;
+
+          const safeX = Math.max(-cardRect.width / 2 + rect.width / 2, Math.min(newX, cardRect.width / 2 - rect.width / 2));
+          const safeY = Math.max(-cardRect.height / 4, Math.min(newY, cardRect.height / 4));
+
+          setDeclinePos({ x: safeX, y: safeY });
+        } else {
+          isMovingRef.current = false;
+          return;
+        }
+
+        requestAnimationFrame(updateDeclineButtonPosition);
+      };
+
+      const handleMouseMove = (e) => {
+        mousePosRef.current = { x: e.clientX, y: e.clientY };
+        if (!isMovingRef.current) {
+          isMovingRef.current = true;
+          requestAnimationFrame(updateDeclineButtonPosition);
+        }
+      };
+
+      return (
+        <div className="min-h-screen flex items-center justify-center p-4 relative" onMouseMove={handleMouseMove}>
+          <Stars />
+          <Meteors />
+          <Particles />
+          {rockets.map(rocket => (
+            <div
+              key={rocket.id}
+              className="firework-rocket"
+              style={{
+                left: rocket.left,
+                animationDelay: `${rocket.delay}ms`,
+              }}
+            ></div>
+          ))}
+          <div className={`bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden transform card-breath border-4 border-pink-400 glow-pulse z-10 ${isShaking ? 'shake' : ''}`}>
+            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 p-8 text-center">
+              <h1 className="text-6xl text-yellow-200 great-vibes">Lễ Tốt Nghiệp 2025</h1>
+              <p className="text-xl text-white mt-2">Khóa 2025 - Rực Rỡ Tương Lai</p>
+              <p className="text-2xl font-bold text-yellow-300 mt-2 dancing-script">Từ: Thắng, Trung và Kiên</p>
+            </div>
+            <div className="p-8 bg-gradient-to-b from-yellow-50 to-pink-50">
+              <p className="text-gray-800 text-lg mb-4">
+                Trân trọng kính mời quý vị đến chung vui cùng chúng tôi tại
+                <span className="font-bold text-purple-600"> Lễ Tốt Nghiệp 2025</span>.
+              </p>
+              <div className="space-y-3 text-gray-700">
+                <p><span className="font-semibold text-pink-600">Ngày:</span> 11 tháng 5, 2025</p>
+                <p><span className="font-semibold text-pink-600">Thời gian:</span> 10:00 sáng</p>
+                <p><span className="font-semibold text-pink-600">Địa điểm:</span> Hội trường C2, Đại học Bách Khoa Hà Nội</p>
+                <p><span className="font-semibold text-pink-600">Trang phục:</span> Lịch sự, trang trọng</p>
+              </div>
+              <div className="mt-6 flex justify-center space-x-4">
+                <button
+                  className="bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition duration-300 shadow-lg transform hover:scale-110"
+                  onClick={handleRSVP}
+                >
+                  Xác Nhận Tham Dự
+                </button>
+                <button
+                  ref={declineButtonRef}
+                  className="bg-gray-500 text-white px-8 py-3 rounded-full hover:bg-gray-600 shadow-lg transform hover:scale-110 decline-button"
+                  style={{ transform: `translate(${declinePos.x}px, ${declinePos.y}px)` }}
+                  onClick={handleDecline}
+                >
+                  Không Tham Dự
+                </button>
+              </div>
+              {message && (
+                <div className="mt-4 text-center confirmation-message">
+                  <p className={`text-lg font-semibold ${message.type === 'confirm' ? 'text-purple-600' : 'text-red-600'}`}>
+                    {message.text}
+                  </p>
+                  <p className="text-sm text-gray-600">{message.subtext}</p>
+                  {message.special && <p className="text-lg font-semibold text-pink-600 mt-2">{message.special}</p>}
+                </div>
+              )}
+            </div>
+            <div className="bg-gradient-to-r from-purple-200 to-pink-200 p-4 text-center">
+              <p className="text-gray-800 font-medium">Hãy cùng chúng tôi tạo nên khoảnh khắc đáng nhớ!</p>
+              <p className="text-sm text-gray-600 mt-1">Đại học Bách Khoa Hà Nội</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      return (
+        <div>
+          <InvitationCard />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
